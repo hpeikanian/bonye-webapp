@@ -17,7 +17,8 @@
     "offline_shell": true,
     "no_private_api_responses_in_shell_cache": true,
     "no_javascript_exceptions": true,
-    "zip_crc": true
+    "zip_crc": true,
+    "zip_public_file_permissions_0644": true
   },
   "unrun": [
     "production_host_deployment",
@@ -27,9 +28,9 @@
     "GitHub_Actions_execution"
   ],
   "artifact": {
-    "file": "downloads/bonye-webapp-v0.2.1.zip",
-    "bytes": 10012992,
-    "sha256": "0198ed8f7a3ca7edb4501129c48358a4da861867f44934d05ad597558e8629a2",
+    "file": "downloads/bonye-webapp-v0.2.1-fixed.zip",
+    "bytes": 10043430,
+    "sha256": "10121a5013f3c8891992ed08a4c526b7dfd44650c5fec893ff213ec0ee22b57e",
     "base_path": "/app/"
   },
   "notes": [
