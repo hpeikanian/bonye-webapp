@@ -1,0 +1,41 @@
+{
+  "shared_source": {
+    "repository": "hpeikanian/bonyeapp",
+    "commit": "cf78325ad84328218545394c54508cd2aec3603a",
+    "lib_sha256": "63c04e788f4a66f2c0374283a8a47491680d787aa342e2a156a07d647d77b3c2"
+  },
+  "app_version": "0.2.1+4",
+  "passed": {
+    "flutter_analyze": true,
+    "shared_flutter_tests": 18,
+    "browser_cache_tests": 1,
+    "web_release_build": true,
+    "android_debug_arm64_build": true,
+    "chromium_mobile_viewport_smoke": true,
+    "english_locale_and_mocked_login": true,
+    "mocked_product_api_and_screen": true,
+    "offline_shell": true,
+    "no_private_api_responses_in_shell_cache": true,
+    "no_javascript_exceptions": true,
+    "zip_crc": true
+  },
+  "unrun": [
+    "production_host_deployment",
+    "physical_iPhone_Safari",
+    "live_account_authentication",
+    "live_checkout_payment",
+    "GitHub_Actions_execution"
+  ],
+  "artifact": {
+    "file": "downloads/bonye-webapp-v0.2.1.zip",
+    "bytes": 10012992,
+    "sha256": "0198ed8f7a3ca7edb4501129c48358a4da861867f44934d05ad597558e8629a2",
+    "base_path": "/app/"
+  },
+  "notes": [
+    "Browser functional checks use mocked API responses and fictional customer data.",
+    "Paired workflows generate build artifacts; automated hosting deployment is not configured.",
+    "Cross-repository Actions checkout needs read access to private repositories.",
+    "Web audio downloads use browser Cache Storage with a 64 MiB cap; browser eviction and iOS background restrictions apply."
+  ]
+}

@@ -1,4 +1,9 @@
 .dart_tool/
 build/
+.flutter-plugins
+.flutter-plugins-dependencies
 .env
 .env.*
+test/*_browser.dart
+__pycache__/
+*.pyc

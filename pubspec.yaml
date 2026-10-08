@@ -1,0 +1,33 @@
+name: bonye_customer
+description: اپ مشتریان بنیه؛ پت، تغذیه، باشگاه و پادکست
+publish_to: none
+version: 0.2.1+4
+environment:
+  sdk: '>=3.5.0 <4.0.0'
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  web: ^1.1.0
+  http: ^1.3.0
+  flutter_secure_storage: ^9.2.4
+  url_launcher: ^6.3.1
+  just_audio: ^0.9.46
+  just_audio_background: ^0.0.1-beta.15
+  audio_service: ^0.18.17
+  path_provider: ^2.1.5
+  flutter_widget_from_html_core: ^0.16.0
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+flutter:
+  uses-material-design: true
+  fonts:
+    - family: NotoSansArabic
+      fonts:
+        - asset: assets/fonts/NotoSansArabic.ttf
+    - family: Cormorant
+      fonts:
+        - asset: assets/fonts/CormorantGaramond.ttf

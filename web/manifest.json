@@ -1,0 +1,11 @@
+{
+  "name": "bonYe!", "short_name": "bonYe!", "id": "./",
+  "start_url": "./", "scope": "./", "display": "standalone",
+  "background_color": "#F5F0E7", "theme_color": "#6B826F",
+  "description": "bonYe! Pet care, nutrition and customer club",
+  "icons": [
+    {"src":"icons/Icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},
+    {"src":"icons/Icon-512.png","sizes":"512x512","type":"image/png","purpose":"any"},
+    {"src":"icons/Icon-maskable-512.png","sizes":"512x512","type":"image/png","purpose":"maskable"}
+  ]
+}

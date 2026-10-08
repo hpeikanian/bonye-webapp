@@ -1,0 +1,50 @@
+name: Build web from shared Android source
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  repository_dispatch:
+    types: [shared-source-updated]
+  schedule:
+    - cron: '17 * * * *'
+permissions:
+  contents: read
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: webapp
+      - uses: actions/checkout@v4
+        with:
+          repository: hpeikanian/bonyeapp
+          ref: main
+          path: shared-source
+          token: ${{ secrets.BONYE_SOURCE_TOKEN || github.token }}
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.29.3'
+          channel: stable
+          cache: true
+      - name: Materialize shared source
+        run: python3 webapp/tool/sync_source.py shared-source
+      - name: Analyze and test common behavior
+        working-directory: webapp
+        run: |
+          flutter pub get --enforce-lockfile
+          flutter analyze
+          flutter test
+          flutter test test/podcast_cache_browser.dart --platform chrome
+      - name: Build installable web app
+        working-directory: webapp
+        run: ./tool/build_web.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bonye-webapp
+          path: webapp/build/web/
+          include-hidden-files: true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: shared-source-revision
+          path: webapp/source-revision.json
