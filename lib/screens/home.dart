@@ -20,10 +20,14 @@ class HomePage extends StatelessWidget {
         load: () => api.request('GET', '/me'),
         builder: (data, reload) => PageBody(
           children: [
-            SectionTitle(
-              'سلام ${data['name'] ?? ''} 👋',
-              'یک قدم کوچک برای حال خوب همراه کوچکت.',
-            ),
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              AppText('سلام ${data['name'] ?? ''} 👋',
+                  style: const TextStyle(
+                      fontSize: 21, fontWeight: FontWeight.w700, color: brand)),
+              const SizedBox(height: 4),
+              const AppText('یک قدم کوچک برای حال خوب همراه کوچکت.',
+                  style: TextStyle(fontSize: 12, color: Color(0xFF627365))),
+            ]),
             CareHero(
               title: 'تغذیه مناسب، زندگی بهتر',
               subtitle: 'غذا، مراقبت، همراهی',

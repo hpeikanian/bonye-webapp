@@ -30,40 +30,26 @@ class CareHero extends StatelessWidget {
   final Widget? action;
   @override
   Widget build(BuildContext context) => ClipRRect(
-        borderRadius: BorderRadius.circular(28),
-        child: Container(
-            color: sage,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                AspectRatio(
-                    aspectRatio: 1.8,
-                    child: Image.asset('assets/images/care-hero.png',
-                        fit: BoxFit.cover,
-                        excludeFromSemantics: true,
-                        errorBuilder: (_, __, ___) => const Center(
-                            child: Icon(Icons.pets_outlined,
-                                size: 72, color: brand)))),
-                Padding(
-                    padding: const EdgeInsets.all(22),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        AppText(title,
-                            style: const TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.w700,
-                                color: brand)),
-                        const SizedBox(height: 6),
-                        AppText(subtitle, style: const TextStyle(color: brand)),
-                        if (action != null) ...[
-                          const SizedBox(height: 14),
-                          action!
-                        ],
-                      ],
-                    )),
-              ],
-            )),
+        borderRadius: BorderRadius.circular(24),
+        child: SizedBox(
+          height: 235,
+          child: Stack(fit: StackFit.expand, children: [
+            Image.asset('assets/images/care-hero.png',
+                fit: BoxFit.cover, excludeFromSemantics: true),
+            const DecoratedBox(
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [Colors.transparent, Color(0x662B4935)]))),
+            if (action != null)
+              PositionedDirectional(
+                  start: 28,
+                  end: 28,
+                  bottom: 14,
+                  child: Center(child: action!)),
+          ]),
+        ),
       );
 }
 

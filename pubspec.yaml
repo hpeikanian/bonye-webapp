@@ -1,7 +1,7 @@
 name: bonye_customer
 description: اپ مشتریان بنیه؛ پت، تغذیه، باشگاه و پادکست
 publish_to: none
-version: 0.3.0+7
+version: 0.3.1+8
 environment:
   sdk: '>=3.5.0 <4.0.0'
 dependencies:
