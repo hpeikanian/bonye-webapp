@@ -1,13 +1,13 @@
 {
   "shared_source": {
     "repository": "hpeikanian/bonyeapp",
-    "commit": "cf78325ad84328218545394c54508cd2aec3603a",
-    "lib_sha256": "63c04e788f4a66f2c0374283a8a47491680d787aa342e2a156a07d647d77b3c2"
+    "commit": "9f3dd71c1809a5de7533d3caf12f4d57dd2e8f1c",
+    "lib_sha256": "4c611b3485e7ef90b0d632ca1be266eebec34ef797718b08de29b7093f7e05ca"
   },
-  "app_version": "0.2.1+4",
+  "app_version": "0.2.2+5",
   "passed": {
     "flutter_analyze": true,
-    "shared_flutter_tests": 18,
+    "shared_flutter_tests": 20,
     "browser_cache_tests": 1,
     "web_release_build": true,
     "android_debug_arm64_build": true,
@@ -18,19 +18,23 @@
     "no_private_api_responses_in_shell_cache": true,
     "no_javascript_exceptions": true,
     "zip_crc": true,
-    "zip_public_file_permissions_0644": true
+    "zip_public_file_permissions_0644": true,
+    "web_quantity_request_mocked": true,
+    "php_lint": true,
+    "php_localized_render_cases": 6
   },
   "unrun": [
     "production_host_deployment",
     "physical_iPhone_Safari",
     "live_account_authentication",
     "live_checkout_payment",
-    "GitHub_Actions_execution"
+    "GitHub_Actions_execution",
+    "WordPress_live_checkout_language_plugin"
   ],
   "artifact": {
-    "file": "downloads/bonye-webapp-v0.2.1-fixed.zip",
-    "bytes": 10043430,
-    "sha256": "10121a5013f3c8891992ed08a4c526b7dfd44650c5fec893ff213ec0ee22b57e",
+    "file": "downloads/bonye-webapp-v0.2.2.zip",
+    "bytes": 10044122,
+    "sha256": "060dd2c0a6da2f6c194b6ca61192f7bc5880c23793d1e0b0ccea4c421356bc1f",
     "base_path": "/app/"
   },
   "notes": [

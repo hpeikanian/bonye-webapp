@@ -33,6 +33,8 @@ class ApiError implements Exception {
   ApiError(this.code, {this.status = 0, this.requestId, this.retryAfter});
   String get message {
     const messages = <String, String>{
+      'quantity_limit':
+          'تعداد انتخاب‌شده بیش از حد مجاز خرید است؛ تعداد را کاهش دهید.',
       'api_disabled': 'API اپ هنوز در بنیه فعال نشده است.',
       'migration_required': 'ارتقای پایگاه داده باید در بنیه تکمیل شود.',
       'sms_not_configured':

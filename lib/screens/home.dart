@@ -126,13 +126,44 @@ class _ProductCardState extends State<ProductCard> {
   VoidCallback? get onPlan => widget.onPlan;
   bool buying = false;
   String checkoutKey = operationKey();
+  int quantity = 1;
+  int get quantityLimit {
+    final stock = product['sellable_quantity'];
+    final limit = product['quick_buy_max_quantity'];
+    var maximum = stock is num ? stock.floor().clamp(0, 100) : 100;
+    if (limit is num) maximum = maximum.clamp(0, limit.floor().clamp(0, 100));
+    return maximum;
+  }
+
+  void selectQuantity(int value) {
+    if (buying || value < 1 || value > quantityLimit || value == quantity) {
+      return;
+    }
+    setState(() {
+      quantity = value;
+      checkoutKey = operationKey();
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant ProductCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.product['variant_id'] != product['variant_id']) {
+      quantity = 1;
+      checkoutKey = operationKey();
+    } else if (quantity > quantityLimit && quantityLimit > 0) {
+      quantity = quantityLimit;
+      checkoutKey = operationKey();
+    }
+  }
+
   Future<void> buy() async {
-    if (buying) return;
+    if (buying || quantityLimit < 1) return;
     setState(() => buying = true);
     try {
       final result = await api.request(
           'POST', '/products/${product['variant_id']}/checkout-link',
-          body: {'quantity': 1}, key: checkoutKey);
+          body: {'quantity': quantity}, key: checkoutKey);
       final url = Uri.tryParse((result['url'] ?? '').toString());
       if (url == null ||
           url.scheme != 'https' ||
@@ -141,7 +172,8 @@ class _ProductCardState extends State<ProductCard> {
           url.userInfo.isNotEmpty) {
         throw ApiError('invalid_link');
       }
-      await externalLink(url.toString());
+      await externalLink(
+          checkoutLanguageUrl(url, appLanguage.english).toString());
       checkoutKey = operationKey();
     } catch (e) {
       if (mounted) showError(context, e);
@@ -183,6 +215,27 @@ class _ProductCardState extends State<ProductCard> {
               AppText(
                   'موجودی قابل فروش: ${product['sellable_quantity'] ?? 0} بسته'),
               const SizedBox(height: 12),
+              if (product['quick_buy_available'] == true && quantityLimit > 0)
+                Row(children: [
+                  const Expanded(child: AppText('تعداد بسته')),
+                  IconButton.outlined(
+                    tooltip: tr('کاهش تعداد'),
+                    onPressed: !buying && quantity > 1
+                        ? () => selectQuantity(quantity - 1)
+                        : null,
+                    icon: const Icon(Icons.remove),
+                  ),
+                  SizedBox(
+                      width: 48, child: Center(child: AppText('$quantity'))),
+                  IconButton.outlined(
+                    tooltip: tr('افزایش تعداد'),
+                    onPressed: !buying && quantity < quantityLimit
+                        ? () => selectQuantity(quantity + 1)
+                        : null,
+                    icon: const Icon(Icons.add),
+                  ),
+                ]),
+              const SizedBox(height: 12),
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
@@ -193,7 +246,9 @@ class _ProductCardState extends State<ProductCard> {
                       child: const AppText('دریافت برنامه غذایی'),
                     ),
                   FilledButton(
-                    onPressed: !buying && product['quick_buy_available'] == true
+                    onPressed: !buying &&
+                            quantityLimit > 0 &&
+                            product['quick_buy_available'] == true
                         ? buy
                         : null,
                     child: const AppText('خرید فوری'),
@@ -226,3 +281,9 @@ class _ProductCardState extends State<ProductCard> {
         ),
       );
 }
+
+/// Locale is presentation-only; preserve the server's checkout ticket fragment.
+Uri checkoutLanguageUrl(Uri url, bool english) => url.replace(queryParameters: {
+      ...url.queryParameters,
+      'bonye_lang': english ? 'en' : 'fa'
+    });

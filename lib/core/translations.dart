@@ -1,5 +1,10 @@
 // UI copy only. API values and server content are never translated on the wire.
 const englishCopy = <String, String>{
+  "تعداد بسته": "Quantity (packs)",
+  "کاهش تعداد": "Decrease quantity",
+  "افزایش تعداد": "Increase quantity",
+  "تعداد انتخاب‌شده بیش از حد مجاز خرید است؛ تعداد را کاهش دهید.":
+      "The quantity exceeds the purchase limit. Choose fewer packs.",
   'شعبه خرید': 'Purchase branch',
   'تعداد مرجوعی': 'Returned quantity',
   'مبلغ پرداخت‌شده': 'Amount paid',

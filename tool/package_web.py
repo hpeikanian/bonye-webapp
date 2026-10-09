@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """Create a hosting ZIP with public-readable files regardless of build umask."""
 from pathlib import Path
-import shutil
 import stat
 import zipfile
 
 root = Path(__file__).resolve().parents[1]
 output = root / 'build/web'
-archive = root / 'downloads/bonye-webapp-v0.2.1-fixed.zip'
+version = next(line.split(':', 1)[1].strip().split('+')[0] for line in (root / 'pubspec.yaml').read_text().splitlines() if line.startswith('version:'))
+archive = root / f'downloads/bonye-webapp-v{version}.zip'
 archive.parent.mkdir(exist_ok=True)
 with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED, compresslevel=9) as z:
     for path in sorted(output.rglob('*')):
@@ -22,5 +22,4 @@ with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED, compresslevel=9) as z:
 with zipfile.ZipFile(archive) as z:
     assert z.testzip() is None
     assert all(((i.external_attr >> 16) & 0o777) == 0o644 for i in z.infolist())
-shutil.copy2(archive, root / 'downloads/bonye-webapp-v0.2.1.zip')
 print('PASS: ZIP CRC and all file permissions 0644')
