@@ -1,10 +1,10 @@
 {
   "shared_source": {
     "repository": "hpeikanian/bonyeapp",
-    "commit": "c19ebfbe82918aeb067385351fc782171b9d18cd",
-    "lib_sha256": "e971a9db00d7d73313a6533e180d4e1139f5738079e522c0ee934ac9f9d6b318"
+    "commit": "3386652db128f73faebd7d1023fc492cb6ad42a5",
+    "lib_sha256": "dedaca238dc86585897fd8bd25ccd351996cea6aa7a60febc8d84d1bf23f23bf"
   },
-  "app_version": "0.3.2+9",
+  "app_version": "0.3.3+10",
   "passed": {
     "flutter_analyze": true,
     "shared_flutter_tests": 26,
@@ -40,9 +40,9 @@
     "physical_Android_update_installation"
   ],
   "artifact": {
-    "file": "downloads/bonye-webapp-v0.3.2.zip",
-    "bytes": 12365345,
-    "sha256": "dc2f307d1bb0bbb4ca0842a654dc0e20e20404cc488d44878bda134daaeb362a",
+    "file": "downloads/bonye-webapp-v0.3.3.zip",
+    "bytes": 12381055,
+    "sha256": "ad9ac15f7c0a8f6c1197045692ebe7abf42f22d3a6ff10dc66a973a3f522d841",
     "base_path": "/app/"
   },
   "notes": [

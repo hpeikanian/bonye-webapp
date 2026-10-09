@@ -92,7 +92,7 @@ void main() {
             .textTheme
             .bodyMedium
             ?.fontFamily,
-        'IranianSans');
+        'IRANSans');
     await capture(tester, 'login-fa');
     await tester.tap(find.byType(LanguagePicker));
     await tester.pumpAndSettle();

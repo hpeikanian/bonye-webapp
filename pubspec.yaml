@@ -1,7 +1,7 @@
 name: bonye_customer
 description: اپ مشتریان بنیه؛ پت، تغذیه، باشگاه و پادکست
 publish_to: none
-version: 0.3.2+9
+version: 0.3.3+10
 environment:
   sdk: '>=3.5.0 <4.0.0'
 dependencies:
@@ -28,11 +28,11 @@ flutter:
   assets:
     - assets/images/
   fonts:
-    - family: IranianSans
+    - family: IRANSans
       fonts:
-        - asset: assets/fonts/IranianSansRegular.ttf
+        - asset: assets/fonts/IRANSansRegular.ttf
           weight: 400
-        - asset: assets/fonts/IranianSansBold.ttf
+        - asset: assets/fonts/IRANSansBold.ttf
           weight: 700
     - family: NotoSansArabic
       fonts:
