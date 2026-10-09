@@ -1,5 +1,14 @@
 // UI copy only. API values and server content are never translated on the wire.
 const englishCopy = <String, String>{
+  'مشاهده محصولات': 'View products',
+  'فهرست نژاد و شرایط در سرور آماده نیست؛ دوباره تلاش کنید.':
+      'The server breed and condition catalog is unavailable. Please try again.',
+  'انتخاب شرایط': 'Select a condition',
+  'انتخاب عکس پت': 'Choose pet photo',
+  'عکس JPG، PNG یا WebP تا ۱۵ مگابایت انتخاب کنید.':
+      'Choose a JPG, PNG or WebP image up to 15 MB.',
+  'عکس پیش از ارسال کوچک می‌شود؛ حداکثر ۱۰۲۴ پیکسل و ۳۰۰ کیلوبایت.':
+      'Photos are resized before upload: up to 1024 pixels and 300 KB.',
   'مشاهده همه': 'View all',
   'جستجوی محصولات': 'Search products',
   'تغذیه سالم، زندگی بهتر': 'Healthy nutrition, a better life',

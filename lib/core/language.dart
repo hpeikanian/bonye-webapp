@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'translations.dart';
+import 'browser_locale.dart';
 
 class LanguageController extends ChangeNotifier {
   LanguageController({this.storage = const FlutterSecureStorage()});
@@ -13,6 +14,7 @@ class LanguageController extends ChangeNotifier {
     try {
       final saved = await storage.read(key: preferenceKey);
       if (saved == 'en' || saved == 'fa') _locale = Locale(saved!);
+      setBrowserLocale(_locale.languageCode);
     } catch (_) {
       // Storage unavailable: keep the usable Persian default.
     }
@@ -21,6 +23,7 @@ class LanguageController extends ChangeNotifier {
   Future<bool> select(String code) async {
     if (!['fa', 'en'].contains(code)) return false;
     _locale = Locale(code);
+    setBrowserLocale(code);
     notifyListeners();
     try {
       await storage.write(key: preferenceKey, value: code);
@@ -124,10 +127,7 @@ class AppInputDecoration extends InputDecoration {
 class ForwardChevron extends StatelessWidget {
   const ForwardChevron({super.key});
   @override
-  Widget build(BuildContext context) =>
-      Icon(Directionality.of(context) == TextDirection.rtl
-          ? Icons.chevron_left
-          : Icons.chevron_right);
+  Widget build(BuildContext context) => const Icon(Icons.chevron_right);
 }
 
 class LanguagePicker extends StatelessWidget {

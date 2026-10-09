@@ -1,0 +1,7 @@
+{
+  "status": "proposed_backend_required_not_live_verified",
+  "paths": {
+    "/pet-reference": {"get": {"summary": "Controlled species-specific breeds and conditions catalog", "parameters": [{"in":"query","name":"species","required":true,"schema":{"enum":["dog","cat"]}}],"responses":{"200":{"description":"Envelope data has revision, species, breeds[], conditions[]; entries have code, name_fa, name_en"}}}},
+    "/pets/{id}/photo": {"put":{"summary":"Owner-authorized JPEG replacement", "requestBody":{"required":true,"content":{"application/json":{"schema":{"type":"object","required":["content_type","image_base64"],"properties":{"content_type":{"const":"image/jpeg"},"image_base64":{"type":"string","maxLength":409600}}}}}},"responses":{"200":{"description":"Envelope data.photo_url HTTPS"}}}}
+  }
+}

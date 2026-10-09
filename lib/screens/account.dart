@@ -1,4 +1,6 @@
 import '../core/language.dart';
+import '../core/browser_locale.dart';
+import 'package:flutter/foundation.dart';
 import '../core/design.dart';
 import '../core/app_updates.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +24,13 @@ class AccountPage extends StatelessWidget {
                     leading: const Icon(Icons.language),
                     title: const AppText('زبان اپ'),
                     trailing: const LanguagePicker())),
+            if (kIsWeb)
+              Card(
+                  child: ListTile(
+                      leading: const Icon(Icons.system_update_outlined),
+                      title: const AppText('به‌روزرسانی اپ'),
+                      trailing: const ForwardChevron(),
+                      onTap: checkBrowserUpdate)),
             if (AppUpdates.supported)
               ListTile(
                   leading: const Icon(Icons.system_update),
@@ -29,28 +38,49 @@ class AccountPage extends StatelessWidget {
                   trailing: const ForwardChevron(),
                   onTap: () => push(
                       context, UpdatePage(updates: UpdateScope.of(context)))),
-            RecordCard(data),
-            OutlinedButton(
-                onPressed: () async {
-                  await Navigator.of(context).push(MaterialPageRoute<void>(
-                      builder: (_) => ProfileForm(api: api, profile: data)));
-                  if (context.mounted) {
-                    reload();
-                  }
-                },
-                child: const AppText('ویرایش پروفایل')),
-            ListTile(
-                title: const AppText('آدرس‌های من'),
-                trailing: const ForwardChevron(),
-                onTap: () => push(context, AddressesPage(api: api))),
-            ListTile(
-                title: const AppText('تنظیمات پیام‌ها'),
-                trailing: const ForwardChevron(),
-                onTap: () => push(context, PreferencesPage(api: api))),
-            ListTile(
-                title: const AppText('نشست‌های فعال'),
-                trailing: const ForwardChevron(),
-                onTap: () => push(context, SessionsPage(api: api))),
+            Card(
+                child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Column(children: [
+                      ListTile(
+                          leading: const Icon(Icons.person_outline),
+                          title: const AppText('ویرایش پروفایل'),
+                          trailing: const ForwardChevron(),
+                          onTap: () async {
+                            await Navigator.of(context).push(
+                                MaterialPageRoute<void>(
+                                    builder: (_) =>
+                                        ProfileForm(api: api, profile: data)));
+                            if (context.mounted) reload();
+                          }),
+                      ListTile(
+                          leading: const Icon(Icons.phone_outlined),
+                          title: AppText('${data['mobile'] ?? ''}',
+                              translate: false)),
+                      if (data['email'] != null)
+                        ListTile(
+                            leading: const Icon(Icons.mail_outline),
+                            title:
+                                AppText('${data['email']}', translate: false)),
+                    ]))),
+            Card(
+                child: ListTile(
+                    leading: const Icon(Icons.location_on_outlined),
+                    title: const AppText('آدرس‌های من'),
+                    trailing: const ForwardChevron(),
+                    onTap: () => push(context, AddressesPage(api: api)))),
+            Card(
+                child: ListTile(
+                    leading: const Icon(Icons.notifications_none),
+                    title: const AppText('تنظیمات پیام‌ها'),
+                    trailing: const ForwardChevron(),
+                    onTap: () => push(context, PreferencesPage(api: api)))),
+            Card(
+                child: ListTile(
+                    leading: const Icon(Icons.devices_outlined),
+                    title: const AppText('نشست‌های فعال'),
+                    trailing: const ForwardChevron(),
+                    onTap: () => push(context, SessionsPage(api: api)))),
             const AppText(
                 'ورود به فروشگاه اینترنتی مستقل است؛ رمز یا توکن اپ به مرورگر منتقل نمی‌شود.'),
             OutlinedButton.icon(

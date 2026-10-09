@@ -1,4 +1,6 @@
 import '../core/language.dart';
+import '../core/design.dart';
+import 'home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../core/api.dart';
@@ -11,7 +13,11 @@ class ClubPage extends StatelessWidget {
   const ClubPage({super.key, required this.api});
   @override
   Widget build(BuildContext context) => RemoteView(
-        load: () => api.request('GET', '/club'),
+        load: () async {
+          final records = await Future.wait(
+              [api.request('GET', '/club'), api.request('GET', '/me')]);
+          return {...records[0], 'member': records[1]};
+        },
         builder: (data, reload) => PageBody(
           children: [
             const SectionTitle('باشگاه بنیه',
@@ -44,7 +50,17 @@ class ClubPage extends StatelessWidget {
                               color: accent,
                               fontSize: 17,
                               fontWeight: FontWeight.w600)),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 12),
+                      AppText('${data['member']?['name'] ?? ''}',
+                          translate: false,
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700)),
+                      AppText('${data['member']?['member_no'] ?? ''}',
+                          translate: false,
+                          style: const TextStyle(color: accent, fontSize: 12)),
+                      const SizedBox(height: 12),
                       const AppText('امتیاز شما',
                           style: TextStyle(color: Color(0xFFE4EBDF))),
                       Text('${data['points'] ?? 0}',
@@ -53,6 +69,51 @@ class ClubPage extends StatelessWidget {
                               fontSize: 32,
                               fontWeight: FontWeight.w700)),
                     ])),
+            if (data['tier']?['next_threshold'] is num &&
+                (data['tier']['next_threshold'] as num) > 0) ...[
+              LinearProgressIndicator(
+                  value: ((data['points'] as num? ?? 0) /
+                          (data['tier']['next_threshold'] as num))
+                      .clamp(0.0, 1.0)
+                      .toDouble(),
+                  minHeight: 8,
+                  borderRadius: BorderRadius.circular(8)),
+              AppText(
+                  '${data['points'] ?? 0} / ${data['tier']['next_threshold']}',
+                  translate: false),
+            ],
+            QuickActions(children: [
+              QuickAction(
+                  title: 'گردش امتیاز',
+                  icon: Icons.stars_outlined,
+                  color: peach,
+                  onTap: () => push(
+                      context,
+                      RecordsPage(
+                          api, '/club/points/transactions', 'گردش امتیاز'))),
+              QuickAction(
+                  title: 'پاداش‌ها',
+                  icon: Icons.card_giftcard_outlined,
+                  onTap: () => push(
+                      context, RecordsPage(api, '/club/rewards', 'پاداش‌ها'))),
+              QuickAction(
+                  title: 'معرفی دوستان',
+                  icon: Icons.people_outline,
+                  color: sky,
+                  onTap: () => push(context, ReferralPage(api: api))),
+              QuickAction(
+                  title: 'کوپن‌های من',
+                  icon: Icons.confirmation_number_outlined,
+                  color: rose,
+                  onTap: () => push(context,
+                      RecordsPage(api, '/club/coupons', 'کوپن‌های من'))),
+            ]),
+            CareHero(
+                title: 'غذا، مراقبت، همراهی',
+                subtitle: '',
+                action: FilledButton(
+                    onPressed: () => push(context, ProductsPage(api: api)),
+                    child: const AppText('مشاهده محصولات'))),
             InfoCard(
               'اعتبار خرید',
               money(data['credit']?['amount']),

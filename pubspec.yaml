@@ -1,7 +1,7 @@
 name: bonye_customer
 description: اپ مشتریان بنیه؛ پت، تغذیه، باشگاه و پادکست
 publish_to: none
-version: 0.3.4+11
+version: 0.4.0+12
 environment:
   sdk: '>=3.5.0 <4.0.0'
 dependencies:
@@ -19,6 +19,8 @@ dependencies:
   audio_service: ^0.18.17
   path_provider: ^2.1.5
   flutter_widget_from_html_core: ^0.16.0
+  file_picker: ^8.3.7
+  image: ^4.5.4
 dev_dependencies:
   flutter_test:
     sdk: flutter

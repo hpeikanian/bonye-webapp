@@ -1,13 +1,13 @@
 {
   "shared_source": {
     "repository": "hpeikanian/bonyeapp",
-    "commit": "593c560cc224586a55f4859c2db16d7ff2821072",
-    "lib_sha256": "21bcabea859c35941af6279acc9c562738852b8a9a43b6f7d5de3742d2e454d5"
+    "commit": "83b5d7dc39cd1c2a170dabf53234c426de7e2cb8",
+    "lib_sha256": "b0c8efa226e5d512b50747e03f66c77fcd6d294318eca775c81ceb116279da40"
   },
-  "app_version": "0.3.4+11",
+  "app_version": "0.4.0+12",
   "passed": {
     "flutter_analyze": true,
-    "shared_flutter_tests": 27,
+    "shared_flutter_tests": 31,
     "browser_cache_tests": 1,
     "web_release_build": true,
     "android_debug_arm64_build": true,
@@ -27,7 +27,8 @@
     "verified_apk_manifest_generation": true,
     "no_updater_or_apk_in_shell_cache": true,
     "workflow_yaml_parsed": true,
-    "persian_font_and_english_font_switch": true
+    "persian_font_and_english_font_switch": true,
+    "web_update_activation_cache_cleanup_and_multiwindow_guard": true
   },
   "unrun": [
     "production_host_deployment",
@@ -37,12 +38,14 @@
     "GitHub_Actions_execution",
     "WordPress_live_checkout_language_plugin",
     "production_FTPS_connection",
-    "physical_Android_update_installation"
+    "physical_Android_update_installation",
+    "live_pet_reference_catalog",
+    "live_pet_photo_upload"
   ],
   "artifact": {
-    "file": "downloads/bonye-webapp-v0.3.4.zip",
-    "bytes": 12381062,
-    "sha256": "5880e4d4de864db32d1c3a5d965e1be4d8d01a11ad4c50a5057209e6022697ad",
+    "file": "downloads/bonye-webapp-v0.4.0.zip",
+    "bytes": 12388915,
+    "sha256": "dd905924b2e530b09cbb165010e134f89bb098f204d34b954204c26c7d945565",
     "base_path": "/app/"
   },
   "notes": [
@@ -51,6 +54,7 @@
     "Web audio downloads use browser Cache Storage with a 64 MiB cap; browser eviction and iOS background restrictions apply.",
     "Paired FTPS publication and Android update checks implemented; production GitHub secrets/variables still required.",
     "Publication keeps the existing development signing identity; a store release key migration remains separate.",
-    "Each FTP file is promoted by rename; deployment is not an atomic folder transaction."
+    "Each FTP file is promoted by rename; deployment is not an atomic folder transaction.",
+    "Pet reference and photo endpoints require backend implementation; client validation passed."
   ]
 }

@@ -106,6 +106,12 @@ String normalizeDigits(String value) {
   return value;
 }
 
+// Decimal separators used by Persian and European phone keyboards.
+String normalizeDecimal(String value) => normalizeDigits(value.trim())
+    .replaceAll('٫', '.')
+    .replaceAll(',', '.')
+    .replaceAll('،', '.');
+
 class BonyeApi extends ChangeNotifier {
   static const defaultBase = 'https://bonye.pet/totallsystem/api/v1';
   final String base;

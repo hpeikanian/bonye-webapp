@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../core/api.dart';
 import '../core/widgets.dart';
 import 'home.dart';
+import '../core/pet_media.dart';
 
 class PetsPage extends StatelessWidget {
   final BonyeApi api;
@@ -31,9 +32,7 @@ class PetsPage extends StatelessWidget {
                   (pet) => Card(
                     child: ListTile(
                       contentPadding: const EdgeInsets.all(16),
-                      leading: SoftIcon(Icons.pets_outlined,
-                          size: 64,
-                          color: pet['species'] == 'cat' ? peach : sage),
+                      leading: PetAvatar(pet: pet),
                       title: AppText('${pet['name']}', translate: false),
                       subtitle: AppText(
                         '${pet['species'] == 'cat' ? 'گربه' : 'سگ'} · ${pet['weight_kg'] ?? '—'} کیلوگرم',
@@ -75,6 +74,9 @@ class _PetFormState extends State<PetForm> {
   int? bcs;
   bool? neutered;
   bool busy = false;
+  Json? reference;
+  String? referenceError;
+  int referenceGeneration = 0;
   String key = operationKey();
   @override
   void initState() {
@@ -93,7 +95,36 @@ class _PetFormState extends State<PetForm> {
     birth = p['birth_date'] as String?;
     bcs = p['body_condition'] as int?;
     neutered = p['neutered'] as bool?;
+    loadReference();
   }
+
+  Future<void> loadReference() async {
+    final generation = ++referenceGeneration;
+    setState(() {
+      reference = null;
+      referenceError = null;
+    });
+    try {
+      final data =
+          await widget.api.request('GET', '/pet-reference?species=$species');
+      if (data['breeds'] is! List || data['conditions'] is! List) {
+        throw ApiError('invalid_response');
+      }
+      if (mounted && generation == referenceGeneration) {
+        setState(() => reference = data);
+      }
+    } catch (_) {
+      if (mounted && generation == referenceGeneration) {
+        setState(() => referenceError =
+            tr('فهرست نژاد و شرایط در سرور آماده نیست؛ دوباره تلاش کنید.'));
+      }
+    }
+  }
+
+  String referenceLabel(Json item) =>
+      '${item[appLanguage.english ? 'name_en' : 'name_fa'] ?? item['name_en'] ?? item['code']}';
+  List<Json> referenceItems(String field) =>
+      (reference?[field] as List? ?? []).cast<Json>();
 
   @override
   void dispose() {
@@ -137,7 +168,7 @@ class _PetFormState extends State<PetForm> {
       'sex': sex,
       'weight_kg': weight.text.isEmpty
           ? null
-          : double.parse(normalizeDigits(weight.text)),
+          : double.parse(normalizeDecimal(weight.text)),
       'body_condition': bcs,
       'activity': activity,
       'life_stage': stage,
@@ -189,19 +220,43 @@ class _PetFormState extends State<PetForm> {
                       ? tr('نام پت را بنویسید.')
                       : null,
                 ),
-                dropdown(
-                    'نوع پت',
-                    species,
-                    {
-                      'dog': 'سگ',
-                      'cat': 'گربه',
-                    },
-                    (v) => species = v),
-                TextFormField(
-                  controller: breed,
-                  decoration: AppInputDecoration(
-                      english: LanguageScope.of(context).english,
-                      labelText: 'نژاد'),
+                dropdown('نوع پت', species, {
+                  'dog': 'سگ',
+                  'cat': 'گربه',
+                }, (v) {
+                  species = v;
+                  breed.clear();
+                  conditions.clear();
+                  loadReference();
+                }),
+                if (reference == null && referenceError == null)
+                  const LinearProgressIndicator(),
+                if (referenceError != null) ...[
+                  Text(referenceError!),
+                  OutlinedButton(
+                      onPressed: loadReference,
+                      child: const AppText('تلاش دوباره')),
+                ],
+                DropdownButtonFormField<String>(
+                  key: ValueKey('breed-$species-${reference != null}'),
+                  isExpanded: true,
+                  value: referenceItems('breeds')
+                          .any((e) => e['code'] == breed.text)
+                      ? breed.text
+                      : null,
+                  decoration: AppInputDecoration(labelText: 'نژاد'),
+                  items: referenceItems('breeds')
+                      .map((e) => DropdownMenuItem(
+                          value: '${e['code']}',
+                          child: Text(referenceLabel(e),
+                              overflow: TextOverflow.ellipsis)))
+                      .toList(),
+                  onChanged: reference == null
+                      ? null
+                      : (v) => setState(() {
+                            breed.text = v ?? '';
+                            key = operationKey();
+                          }),
                 ),
                 OutlinedButton.icon(
                   onPressed: () async {
@@ -236,7 +291,7 @@ class _PetFormState extends State<PetForm> {
                     if (v == null || v.isEmpty) {
                       return null;
                     }
-                    final n = double.tryParse(normalizeDigits(v));
+                    final n = double.tryParse(normalizeDecimal(v));
                     return n == null || !n.isFinite || n <= 0 || n > 200
                         ? tr('وزن معتبر وارد کنید.')
                         : null;
@@ -304,16 +359,50 @@ class _PetFormState extends State<PetForm> {
                 const AppText(
                   'BCS بهتر است با راهنمایی دامپزشک تعیین شود. مقدار نامعلوم را حدس نزنید.',
                 ),
-                TextFormField(
-                  controller: conditions,
-                  maxLines: 3,
-                  decoration: AppInputDecoration(
-                    english: LanguageScope.of(context).english,
-                    labelText: 'بیماری، حساسیت، بارداری یا شرایط خاص',
-                    helperText:
-                        'موارد را با ویرگول جدا کنید؛ اگر هیچ‌کدام نیست، خالی بگذارید.',
-                  ),
+                const AppText('بیماری، حساسیت، بارداری یا شرایط خاص'),
+                DropdownButtonFormField<String>(
+                  key: ValueKey('conditions-$species-${conditions.text}'),
+                  isExpanded: true,
+                  decoration: AppInputDecoration(labelText: 'انتخاب شرایط'),
+                  items: referenceItems('conditions')
+                      .where((e) =>
+                          !conditions.text.split('،').contains(e['code']))
+                      .map((e) => DropdownMenuItem(
+                          value: '${e['code']}',
+                          child: Text(referenceLabel(e))))
+                      .toList(),
+                  onChanged: reference == null
+                      ? null
+                      : (v) => setState(() {
+                            final values = conditions.text
+                                .split('،')
+                                .where((x) => x.isNotEmpty)
+                                .toSet();
+                            if (v != null) values.add(v);
+                            conditions.text = values.join('،');
+                            key = operationKey();
+                          }),
                 ),
+                Wrap(
+                    spacing: 6,
+                    children: conditions.text
+                        .split('،')
+                        .where((v) => v.isNotEmpty)
+                        .map((code) {
+                      final matches = referenceItems('conditions')
+                          .where((e) => e['code'] == code);
+                      return InputChip(
+                          label: Text(matches.isEmpty
+                              ? code
+                              : referenceLabel(matches.first)),
+                          onDeleted: () => setState(() {
+                                conditions.text = conditions.text
+                                    .split('،')
+                                    .where((v) => v != code)
+                                    .join('،');
+                                key = operationKey();
+                              }));
+                    }).toList()),
                 FilledButton(
                   onPressed: busy ? null : save,
                   child: AppText(busy ? 'در حال ذخیره…' : 'ذخیره پرونده'),
@@ -325,19 +414,39 @@ class _PetFormState extends State<PetForm> {
       );
 }
 
-class PetPage extends StatelessWidget {
+class PetPage extends StatefulWidget {
   final BonyeApi api;
   final Json pet;
   const PetPage({super.key, required this.api, required this.pet});
+  @override
+  State<PetPage> createState() => _PetPageState();
+}
+
+class _PetPageState extends State<PetPage> {
+  BonyeApi get api => widget.api;
+  late Json pet = {...widget.pet};
+  Future<void> edit(Widget page) async {
+    await Navigator.of(context)
+        .push(MaterialPageRoute<void>(builder: (_) => page));
+    if (!mounted) return;
+    try {
+      final current = await api.request('GET', '/pets/${pet['id']}');
+      if (mounted) setState(() => pet = {...pet, ...current});
+    } catch (error) {
+      if (mounted) showError(context, error);
+    }
+  }
+
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(title: AppText('${pet['name']}', translate: false)),
         body: PageBody(
           children: [
+            PetPhotoCard(api: api, pet: pet),
             ProfileHeader(
                 name: '${pet['name'] ?? ''}',
                 subtitle:
-                    '${pet['breed'] ?? tr(pet['species'] == 'cat' ? 'گربه' : 'سگ')}',
+                    '${pet[appLanguage.english ? 'breed_name_en' : 'breed_name_fa'] ?? pet['breed'] ?? tr(pet['species'] == 'cat' ? 'گربه' : 'سگ')}',
                 icon: Icons.pets_outlined),
             InfoCard(
               'وزن فعلی',
@@ -353,12 +462,12 @@ class PetPage extends StatelessWidget {
                   title: 'ویرایش مشخصات',
                   icon: Icons.edit_outlined,
                   color: peach,
-                  onTap: () => push(context, PetForm(api: api, pet: pet))),
+                  onTap: () => edit(PetForm(api: api, pet: pet))),
               QuickAction(
                   title: 'ثبت وزن جدید',
                   icon: Icons.monitor_weight_outlined,
                   color: sky,
-                  onTap: () => push(context, WeightForm(api: api, pet: pet))),
+                  onTap: () => edit(WeightForm(api: api, pet: pet))),
               QuickAction(
                   title: 'سابقه وزن',
                   icon: Icons.insights_outlined,
@@ -435,7 +544,7 @@ class _WeightFormState extends State<WeightForm> {
               onPressed: busy
                   ? null
                   : () async {
-                      final n = double.tryParse(normalizeDigits(weight.text));
+                      final n = double.tryParse(normalizeDecimal(weight.text));
                       if (n == null || !n.isFinite || n <= 0 || n > 200) {
                         showError(
                           context,

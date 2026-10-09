@@ -81,14 +81,12 @@ class _BonyeAppState extends State<BonyeApp> {
             localizationsDelegates: GlobalMaterialLocalizations.delegates,
             theme: ThemeData(
               useMaterial3: true,
-              fontFamily:
-                  appLanguage.english ? 'NotoSansArabic' : 'IRANSans',
+              fontFamily: appLanguage.english ? 'NotoSansArabic' : 'IRANSans',
               fontFamilyFallback: const ['NotoSansArabic'],
               primaryTextTheme: TextTheme(
                   labelLarge: TextStyle(
-                      fontFamily: appLanguage.english
-                          ? 'NotoSansArabic'
-                          : 'IRANSans')),
+                      fontFamily:
+                          appLanguage.english ? 'NotoSansArabic' : 'IRANSans')),
               colorScheme: ColorScheme.fromSeed(
                       seedColor: brand, brightness: Brightness.light)
                   .copyWith(

@@ -7,7 +7,7 @@ _flutter.loader.load({
     await appRunner.runApp();
     document.getElementById('loading')?.remove();
     if ('serviceWorker' in navigator && window.isSecureContext) {
-      navigator.serviceWorker.register('sw.js').catch(console.error);
+      navigator.serviceWorker.register('sw.js', {updateViaCache: 'none'}).then(reg => window.bonyeWebUpdater?.attach(reg)).catch(console.error);
     }
   }
 });

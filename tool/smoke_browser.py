@@ -21,13 +21,15 @@ with sync_playwright() as p:
   if path.endswith('/checkout-link'):
    quantities.append(req.post_data_json['quantity'])
    route.fulfill(status=200,headers=headers,content_type='application/json',body=json.dumps({'data':{'url':'https://foreign.invalid/checkout'}}));return
-  data={'/auth/login':{'access_token':'browser-test-access','refresh_token':'browser-test-refresh','access_expires_at':'2099-01-01T00:00:00Z','refresh_expires_at':'2099-02-01T00:00:00Z'},'/me':{'name':'Demo','member_no':'DEMO-1'},'/products':{'items':[{'variant_id':1,'name':'Demo product','sellable_quantity':10,'sale_price':1000000,'quick_buy_available':True}]},'/pets':{'items':[]}}
+  data={'/auth/login':{'access_token':'browser-test-access','refresh_token':'browser-test-refresh','access_expires_at':'2099-01-01T00:00:00Z','refresh_expires_at':'2099-02-01T00:00:00Z'},'/me':{'name':'Demo','member_no':'DEMO-1'},'/club':{'points':1240,'tier':{'name':'Gold','next_threshold':2000},'credit':{'amount':50000}},'/products':{'items':[{'variant_id':1,'name':'Demo product','sellable_quantity':10,'sale_price':1000000,'quick_buy_available':True}]},'/pets':{'items':[]}}
   route.fulfill(status=200,headers=headers,content_type='application/json',body=json.dumps({'data':data.get(path,{'items':[],'pagination':{'next_page':None}}),'meta':{'api_version':'1'}}))
  page.route('https://bonye.pet/totallsystem/api/v1/**',api)
  page.goto(args.base_url);page.wait_for_timeout(5000)
  page.evaluate("document.querySelector('flt-semantics-placeholder')?.click()")
+ if page.locator('#bonye-update').is_visible():
+  page.locator('#bonye-update button').last.click()
  page.screenshot(path=str(root/'login-fa-web.png'))
- page.get_by_role('button',name=re.compile('زبان اپ')).click()
+ page.get_by_role('button',name=re.compile('زبان اپ')).press('Enter')
  page.get_by_text('English',exact=True).click()
  page.get_by_role('button',name='Sign in to bonYe!',exact=True).wait_for()
  page.screenshot(path=str(root/'login-en-web.png'))
@@ -38,11 +40,11 @@ with sync_playwright() as p:
  page.wait_for_timeout(3000)
  assert 'DEMO-1' in page.locator('body').inner_text()
  page.screenshot(path=str(root/'home-en-web.png'))
- page.get_by_role('button',name=re.compile('App language')).click()
+ page.get_by_role('button',name=re.compile('App language')).press('Enter')
  page.get_by_text('فارسی',exact=True).click()
  page.wait_for_timeout(2000)
  page.screenshot(path=str(root/'home-fa-web.png'))
- page.get_by_role('button',name=re.compile('زبان اپ')).click()
+ page.get_by_role('button',name=re.compile('زبان اپ')).press('Enter')
  page.get_by_text('English',exact=True).click()
  page.get_by_role('button',name='Products',exact=True).first.click(timeout=5000)
  page.wait_for_timeout(1500)
@@ -52,6 +54,13 @@ with sync_playwright() as p:
  page.wait_for_timeout(1000)
  assert quantities == [2]
  page.screenshot(path=str(root/'products-en-web.png'))
+ page.get_by_role('button',name='Back',exact=True).click()
+ page.get_by_text('Club Tab 3 of 5',exact=True).click()
+ page.wait_for_timeout(5000)
+ page.screenshot(path=str(root/'club-en-web.png'))
+ page.get_by_text('My account Tab 5 of 5',exact=True).click()
+ page.wait_for_timeout(1000)
+ page.screenshot(path=str(root/'account-en-web.png'))
  # Shell and locale must survive an offline reload. Live API remains unavailable.
  page.evaluate('navigator.serviceWorker.ready')
  caches_before=page.evaluate('caches.keys()')

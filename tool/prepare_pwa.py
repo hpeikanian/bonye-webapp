@@ -27,9 +27,17 @@ const PRECACHE = PRECACHE_JSON;
 const base = new URL('./', self.location.href);
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(SHELL_CACHE).then(cache =>
-    cache.addAll(PRECACHE.map(path => new Request(new URL(path, base).href, {cache: 'reload'})))));
+    cache.addAll(PRECACHE.map(path => new Request(new URL(path, base).href, {cache: 'no-store'})))));
 });
 // A new worker activates after old tabs close, so an active purchase is not interrupted.
+self.addEventListener('message', event => {
+  if (event.data?.type !== 'ACTIVATE_UPDATE') return;
+  event.waitUntil(self.clients.matchAll({type: 'window', includeUncontrolled: true}).then(windows => {
+    const active = windows.filter(client => new URL(client.url).pathname.startsWith(base.pathname));
+    if (active.length > 1) event.source?.postMessage({type: 'OTHER_WINDOWS_OPEN'});
+    else return self.skipWaiting();
+  }));
+});
 self.addEventListener('activate', event => {
   event.waitUntil(caches.keys().then(keys => Promise.all(keys
     .filter(key => key.startsWith('bonye.shell.') && key !== SHELL_CACHE)

@@ -9,7 +9,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/testing.dart';
 import 'package:bonye_customer/core/api.dart';
 import 'package:bonye_customer/core/language.dart';
-import 'package:bonye_customer/core/widgets.dart';
 import 'package:bonye_customer/main.dart';
 import 'package:bonye_customer/screens/pets.dart';
 import 'api_test.dart' show MemoryTokens, session, success, failure;
@@ -134,6 +133,9 @@ void main() {
     final api = BonyeApi(
         tokens: store,
         client: MockClient((request) async {
+          if (request.url.path.endsWith('/pet-reference')) {
+            return success({'breeds': [], 'conditions': []});
+          }
           if (request.method == 'POST' && request.url.path.endsWith('/pets')) {
             submittedPet = jsonDecode(request.body) as Json;
             return success({'id': 1});
@@ -199,8 +201,8 @@ void main() {
     expect(submittedPet?['life_stage'], 'adult');
     await tester.tap(find.text('My account'));
     await tester.pumpAndSettle();
-    expect(find.byType(RecordCard), findsOneWidget);
-    expect(find.text('Name'), findsOneWidget);
+    expect(find.text('Edit profile'), findsOneWidget);
+    expect(find.text('09121234567'), findsWidgets);
     expect(find.text('مریم'), findsWidgets);
     expect(find.text('App language'), findsOneWidget);
 
