@@ -138,18 +138,21 @@ class UpdateScope extends InheritedNotifier<AppUpdates> {
 }
 
 class UpdateHost extends StatefulWidget {
-  const UpdateHost({super.key, required this.child, required this.navigator});
+  const UpdateHost(
+      {super.key, required this.child, required this.navigator, this.updates});
   final Widget child;
+  final AppUpdates? updates;
   final GlobalKey<NavigatorState> navigator;
   @override
   State<UpdateHost> createState() => _UpdateHostState();
 }
 
 class _UpdateHostState extends State<UpdateHost> with WidgetsBindingObserver {
-  final updates = AppUpdates();
+  late final AppUpdates updates;
   @override
   void initState() {
     super.initState();
+    updates = widget.updates ?? AppUpdates();
     WidgetsBinding.instance.addObserver(this);
     if (AppUpdates.supported) unawaited(updates.check());
   }
@@ -164,7 +167,7 @@ class _UpdateHostState extends State<UpdateHost> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    updates.dispose();
+    if (widget.updates == null) updates.dispose();
     super.dispose();
   }
 
@@ -195,10 +198,11 @@ class _UpdateHostState extends State<UpdateHost> with WidgetsBindingObserver {
                                             builder: (_) =>
                                                 UpdatePage(updates: updates))),
                                     child: const AppText('به‌روزرسانی')),
-                                IconButton(
-                                    tooltip: tr('بعداً'),
-                                    onPressed: updates.dismiss,
-                                    icon: const Icon(Icons.close)),
+                                Semantics(
+                                    label: tr('بعداً'),
+                                    child: IconButton(
+                                        onPressed: updates.dismiss,
+                                        icon: const Icon(Icons.close))),
                               ]),
                             )),
                       ),

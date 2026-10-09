@@ -4,7 +4,7 @@
 
 ## نسخه ۰٫۳٫۰
 
-[دانلود وب‌اپ](https://github.com/hpeikanian/bonye-webapp/raw/refs/heads/main/downloads/bonye-webapp-v0.3.3.zip) · [پیش‌نمایش فارسی](docs/home-fa-web.png)
+[دانلود وب‌اپ](https://github.com/hpeikanian/bonye-webapp/raw/refs/heads/main/downloads/bonye-webapp-v0.3.4.zip) · [پیش‌نمایش فارسی](docs/home-fa-web.png)
 
 خانه، محصولات، پت‌ها، باشگاه و حساب با رنگ‌های برند و کارت‌های جدید بازطراحی شده‌اند. خروجی اندروید از همین کد مشترک ساخته می‌شود.
 

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -22,6 +23,36 @@ Future<PackageInfo> installed() async => PackageInfo(
     version: '0.2.2',
     buildNumber: '5');
 void main() {
+  testWidgets(
+      'Android update banner above navigator builds and dismisses safely',
+      (tester) async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.android;
+    addTearDown(() => debugDefaultTargetPlatformOverride = null);
+    final updates = AppUpdates(
+        installed: installed,
+        client: MockClient(
+            (_) async => http.Response(jsonEncode(manifest(6)), 200)));
+    final navigator = GlobalKey<NavigatorState>();
+    await tester.pumpWidget(MaterialApp(
+        navigatorKey: navigator,
+        builder: (_, child) =>
+            UpdateHost(navigator: navigator, updates: updates, child: child!),
+        home: const Scaffold(body: Text('Home'))));
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+    expect(find.text('نسخه جدید اپ آماده است.'), findsOneWidget);
+    await tester.tap(find.text('به‌روزرسانی'));
+    await tester.pumpAndSettle();
+    expect(find.byType(UpdatePage), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    await tester.tap(find.byIcon(Icons.close));
+    await tester.pumpAndSettle();
+    expect(find.text('نسخه جدید اپ آماده است.'), findsNothing);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox());
+    updates.dispose();
+    debugDefaultTargetPlatformOverride = null;
+  });
   testWidgets(
       'opening update page does not notify ancestors during navigation build',
       (tester) async {
