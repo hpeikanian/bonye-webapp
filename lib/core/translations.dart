@@ -1,5 +1,11 @@
 // UI copy only. API values and server content are never translated on the wire.
 const englishCopy = <String, String>{
+  'مشاهده همه': 'View all',
+  'جستجوی محصولات': 'Search products',
+  'تغذیه سالم، زندگی بهتر': 'Healthy nutrition, a better life',
+  'غذا و مراقبت برای همراه کوچک شما': 'Food and care for your little companion',
+  'محصولی با این جستجو پیدا نشد.': 'No products match your search.',
+  'اطلاعات و همراهان شما': 'Your details and companions',
   'نسخه جدید اپ آماده است.': 'A new app version is available.',
   'به‌روزرسانی': 'Update',
   'بعداً': 'Later',

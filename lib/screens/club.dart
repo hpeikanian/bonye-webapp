@@ -14,17 +14,45 @@ class ClubPage extends StatelessWidget {
         load: () => api.request('GET', '/club'),
         builder: (data, reload) => PageBody(
           children: [
-            const BrandFeature(
-                title: 'باشگاه بنیه',
-                subtitle:
-                    'خرید، امتیاز و مزایای شما؛ یک حساب مشترک در سایت و شعب.',
-                icon: Icons.workspace_premium_outlined),
-            InfoCard('امتیاز شما', '${data['points'] ?? 0}', Icons.stars),
-            InfoCard(
-              'سطح عضویت',
-              '${data['tier']?['name'] ?? 'عضو باشگاه'}',
-              Icons.workspace_premium,
-            ),
+            const SectionTitle('باشگاه بنیه',
+                'خرید، امتیاز و مزایای شما؛ یک حساب مشترک در سایت و شعب.'),
+            Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                        colors: [Color(0xFF274C3B), brand]),
+                    borderRadius: BorderRadius.circular(28)),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(children: [
+                        const Text('bonYe!',
+                            textDirection: TextDirection.ltr,
+                            style: TextStyle(
+                                color: accent,
+                                fontFamily: 'Cormorant',
+                                fontSize: 32,
+                                fontWeight: FontWeight.w900)),
+                        const Spacer(),
+                        const Icon(Icons.workspace_premium_outlined,
+                            color: accent, size: 36)
+                      ]),
+                      const SizedBox(height: 20),
+                      AppText('${data['tier']?['name'] ?? tr('عضو باشگاه')}',
+                          translate: false,
+                          style: const TextStyle(
+                              color: accent,
+                              fontSize: 17,
+                              fontWeight: FontWeight.w600)),
+                      const SizedBox(height: 16),
+                      const AppText('امتیاز شما',
+                          style: TextStyle(color: Color(0xFFE4EBDF))),
+                      Text('${data['points'] ?? 0}',
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 32,
+                              fontWeight: FontWeight.w700)),
+                    ])),
             InfoCard(
               'اعتبار خرید',
               money(data['credit']?['amount']),

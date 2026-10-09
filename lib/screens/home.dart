@@ -1,4 +1,5 @@
 import '../core/language.dart';
+import '../core/design.dart';
 import 'package:flutter/material.dart';
 import '../core/api.dart';
 import '../core/widgets.dart';
@@ -23,36 +24,36 @@ class HomePage extends StatelessWidget {
               'سلام ${data['name'] ?? ''} 👋',
               'یک قدم کوچک برای حال خوب همراه کوچکت.',
             ),
-            BrandFeature(
+            CareHero(
               title: 'تغذیه مناسب، زندگی بهتر',
-              subtitle:
-                  'مشخصات پتت را تکمیل کن تا پیشنهاد غذا و برنامه مصرف متناسب با او را ببینی.',
-              icon: Icons.spa_outlined,
+              subtitle: 'غذا، مراقبت، همراهی',
               action: FilledButton.icon(
-                  style: FilledButton.styleFrom(
-                      backgroundColor: accent, foregroundColor: brand),
                   onPressed: onPets,
-                  icon: const Icon(Icons.arrow_forward),
+                  icon: const Icon(Icons.pets_outlined),
                   label: const AppText('برنامه غذایی پت من')),
             ),
-            LayoutBuilder(
-                builder: (context, constraints) =>
-                    Wrap(spacing: 12, runSpacing: 12, children: [
-                      SizedBox(
-                          width: (constraints.maxWidth - 12) / 2,
-                          child: ActionTile(
-                              title: 'باشگاه بنیه',
-                              subtitle: 'امتیاز و مزایای شما',
-                              icon: Icons.workspace_premium_outlined,
-                              onTap: onClub)),
-                      SizedBox(
-                          width: (constraints.maxWidth - 12) / 2,
-                          child: ActionTile(
-                              title: 'آموزش و مراقبت',
-                              subtitle: 'پادکست و مقاله',
-                              icon: Icons.headphones_outlined,
-                              onTap: onLearn)),
-                    ])),
+            QuickActions(children: [
+              QuickAction(
+                  title: 'محصولات',
+                  icon: Icons.shopping_bag_outlined,
+                  onTap: () => push(context, ProductsPage(api: api))),
+              QuickAction(
+                  title: 'پت‌های من',
+                  icon: Icons.pets_outlined,
+                  color: peach,
+                  onTap: onPets),
+              QuickAction(
+                  title: 'آموزش',
+                  icon: Icons.school_outlined,
+                  color: sky,
+                  onTap: onLearn),
+              QuickAction(
+                  title: 'باشگاه',
+                  icon: Icons.card_giftcard_outlined,
+                  color: rose,
+                  onTap: onClub),
+            ]),
+            HomeCatalog(api: api),
             InfoCard(
               'شماره عضویت',
               '${data['member_no'] ?? '—'}',
@@ -82,27 +83,49 @@ class HomePage extends StatelessWidget {
       );
 }
 
-class ProductsPage extends StatelessWidget {
+class ProductsPage extends StatefulWidget {
   final BonyeApi api;
   const ProductsPage({super.key, required this.api});
+  @override
+  State<ProductsPage> createState() => _ProductsPageState();
+}
+
+class _ProductsPageState extends State<ProductsPage> {
+  String query = '';
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(title: const AppText('محصولات بنیه')),
         body: RemoteView(
-          load: () => api.request('GET', '/products?limit=100'),
-          builder: (data, reload) => PageBody(
-            children: [
-              const AppText(
-                'قیمت‌ها به ریال هستند. قیمت و موجودی نهایی هنگام پرداخت در سایت مشخص می‌شود.',
-              ),
-              ...(data['items'] as List).cast<Json>().map(
-                    (p) => ProductCard(api: api, product: p),
-                  ),
-              if ((data['items'] as List).isEmpty)
-                const AppText('هنوز محصولی برای نمایش وجود ندارد.'),
-            ],
-          ),
-        ),
+            load: () => widget.api.request('GET', '/products?limit=100'),
+            builder: (data, reload) {
+              final products = (data['items'] as List).cast<Json>();
+              final visible = products
+                  .where((product) =>
+                      '${product['name'] ?? ''} ${product['sku'] ?? ''}'
+                          .toLowerCase()
+                          .contains(query.toLowerCase().trim()))
+                  .toList();
+              return PageBody(children: [
+                TextField(
+                    onChanged: (value) => setState(() => query = value),
+                    decoration: AppInputDecoration(
+                        english: LanguageScope.of(context).english,
+                        hintText: 'جستجوی محصولات',
+                        prefixIcon: const Icon(Icons.search))),
+                const SectionTitle('تغذیه سالم، زندگی بهتر',
+                    'غذا و مراقبت برای همراه کوچک شما'),
+                const AppText(
+                    'قیمت‌ها به ریال هستند. قیمت و موجودی نهایی هنگام پرداخت در سایت مشخص می‌شود.'),
+                ...visible.map((product) => ProductCard(
+                    key: ValueKey(product['variant_id']),
+                    api: widget.api,
+                    product: product)),
+                if (products.isEmpty)
+                  const AppText('هنوز محصولی برای نمایش وجود ندارد.'),
+                if (products.isNotEmpty && visible.isEmpty)
+                  const AppText('محصولی با این جستجو پیدا نشد.'),
+              ]);
+            }),
       );
 }
 
@@ -189,19 +212,31 @@ class _ProductCardState extends State<ProductCard> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (Uri.tryParse((product['image_url'] ?? '').toString())
-                      ?.scheme ==
-                  'https')
-                ClipRRect(
-                    borderRadius: BorderRadius.circular(18),
-                    child: Image.network(product['image_url'] as String,
-                        height: 200,
+              Container(
+                decoration: BoxDecoration(
+                    color: const Color(0xFFF2EFE5),
+                    borderRadius: BorderRadius.circular(20)),
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: SizedBox(
+                        height: 180,
                         width: double.infinity,
-                        fit: BoxFit.contain,
-                        errorBuilder: (_, error, stack) => const SizedBox(
-                            height: 80,
-                            child: Icon(Icons.image_not_supported_outlined)),
-                        semanticLabel: product['name']?.toString())),
+                        child:
+                            Uri.tryParse((product['image_url'] ?? '').toString())
+                                        ?.scheme ==
+                                    'https'
+                                ? Image.network(product['image_url'] as String,
+                                    fit: BoxFit.contain,
+                                    semanticLabel: product['name']?.toString(),
+                                    errorBuilder: (_, __, ___) => const Center(
+                                        child:
+                                            SoftIcon(Icons.shopping_bag_outlined,
+                                                size: 72)))
+                                : const Center(
+                                    child: SoftIcon(Icons.shopping_bag_outlined,
+                                        size: 72)))),
+              ),
+              const SizedBox(height: 16),
               AppText(
                 '${product['name'] ?? product['sku']}',
                 translate: false,
@@ -287,3 +322,89 @@ Uri checkoutLanguageUrl(Uri url, bool english) => url.replace(queryParameters: {
       ...url.queryParameters,
       'bonye_lang': english ? 'en' : 'fa'
     });
+
+class HomeCatalog extends StatefulWidget {
+  const HomeCatalog({super.key, required this.api});
+  final BonyeApi api;
+  @override
+  State<HomeCatalog> createState() => _HomeCatalogState();
+}
+
+class _HomeCatalogState extends State<HomeCatalog> {
+  late Future<Json> future;
+  @override
+  void initState() {
+    super.initState();
+    future = widget.api.request('GET', '/products?limit=6');
+  }
+
+  Widget preview(Json product) => SizedBox(
+      width: 156,
+      child: Card(
+        child: InkWell(
+          borderRadius: BorderRadius.circular(24),
+          onTap: () => push(context, ProductsPage(api: widget.api)),
+          child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                        height: 120,
+                        width: double.infinity,
+                        child: Uri.tryParse('${product['image_url'] ?? ''}')
+                                    ?.scheme ==
+                                'https'
+                            ? Image.network(product['image_url'] as String,
+                                fit: BoxFit.contain,
+                                errorBuilder: (_, __, ___) => const Center(
+                                    child:
+                                        SoftIcon(Icons.shopping_bag_outlined)))
+                            : const Center(
+                                child: SoftIcon(Icons.shopping_bag_outlined))),
+                    const SizedBox(height: 8),
+                    AppText('${product['name'] ?? product['sku'] ?? ''}',
+                        translate: false,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis),
+                    const SizedBox(height: 4),
+                    AppText(money(product['price']?['amount']),
+                        style: const TextStyle(
+                            fontSize: 12, fontWeight: FontWeight.w700)),
+                  ])),
+        ),
+      ));
+
+  @override
+  Widget build(BuildContext context) => FutureBuilder<Json>(
+      future: future,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return const SizedBox.shrink();
+        final products = (snapshot.data?['items'] as List? ?? []).cast<Json>();
+        if (products.isEmpty) return const SizedBox.shrink();
+        return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(children: [
+                const Expanded(
+                    child: AppText('محصولات بنیه',
+                        style: TextStyle(fontWeight: FontWeight.w700))),
+                TextButton(
+                    onPressed: () =>
+                        push(context, ProductsPage(api: widget.api)),
+                    child: const AppText('مشاهده همه')),
+              ]),
+              SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: products
+                          .take(6)
+                          .map((product) => Padding(
+                              padding:
+                                  const EdgeInsetsDirectional.only(end: 12),
+                              child: preview(product)))
+                          .toList())),
+            ]);
+      });
+}

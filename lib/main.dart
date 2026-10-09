@@ -201,32 +201,37 @@ class _CustomerShellState extends State<CustomerShell> {
         ],
       ),
       body: KeyedSubtree(key: ValueKey(selected), child: pages[selected]),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: selected,
-        onDestinationSelected: (i) => setState(() => selected = i),
-        destinations: [
-          NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home),
-            label: tr('خانه'),
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.pets_outlined),
-            label: tr('پت‌های من'),
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.stars_outlined),
-            label: tr('باشگاه'),
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.headphones_outlined),
-            label: tr('آموزش'),
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.person_outline),
-            label: tr('حساب من'),
-          ),
-        ],
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.fromLTRB(12, 4, 12, 10),
+        child: ClipRRect(
+            borderRadius: BorderRadius.circular(26),
+            child: NavigationBar(
+              selectedIndex: selected,
+              onDestinationSelected: (i) => setState(() => selected = i),
+              destinations: [
+                NavigationDestination(
+                  icon: Icon(Icons.home_outlined),
+                  selectedIcon: Icon(Icons.home),
+                  label: tr('خانه'),
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.pets_outlined),
+                  label: tr('پت‌های من'),
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.stars_outlined),
+                  label: tr('باشگاه'),
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.headphones_outlined),
+                  label: tr('آموزش'),
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.person_outline),
+                  label: tr('حساب من'),
+                ),
+              ],
+            )),
       ),
     );
   }

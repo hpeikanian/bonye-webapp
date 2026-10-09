@@ -1,4 +1,5 @@
 import '../core/language.dart';
+import '../core/design.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
@@ -120,12 +121,11 @@ class _ContentListState extends State<ContentList> {
               (item) => Card(
                 child: ListTile(
                   contentPadding: const EdgeInsets.all(16),
-                  leading: Icon(
-                    widget.kind == 'podcasts'
-                        ? Icons.headphones
-                        : Icons.menu_book,
-                    color: brand,
-                  ),
+                  leading: SoftIcon(
+                      widget.kind == 'podcasts'
+                          ? Icons.headphones_outlined
+                          : Icons.menu_book_outlined,
+                      color: widget.kind == 'podcasts' ? sky : peach),
                   title: AppText(plainText(item['title']), translate: false),
                   subtitle: AppText(
                     plainText(item['excerpt']),

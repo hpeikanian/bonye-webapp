@@ -1,7 +1,7 @@
 name: bonye_customer
 description: اپ مشتریان بنیه؛ پت، تغذیه، باشگاه و پادکست
 publish_to: none
-version: 0.2.3+6
+version: 0.3.0+7
 environment:
   sdk: '>=3.5.0 <4.0.0'
 dependencies:
@@ -25,6 +25,8 @@ dev_dependencies:
   flutter_lints: ^5.0.0
 flutter:
   uses-material-design: true
+  assets:
+    - assets/images/
   fonts:
     - family: NotoSansArabic
       fonts:

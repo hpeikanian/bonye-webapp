@@ -1,4 +1,5 @@
 import '../core/language.dart';
+import '../core/design.dart';
 import '../core/app_updates.dart';
 import 'package:flutter/material.dart';
 import '../core/api.dart';
@@ -11,9 +12,11 @@ class AccountPage extends StatelessWidget {
   Widget build(BuildContext context) => RemoteView(
       load: () => api.request('GET', '/me'),
       builder: (data, reload) => PageBody(children: [
-            SectionTitle(
-                '${data['name'] ?? tr('حساب من')}', '${data['mobile'] ?? ''}',
-                translateTitle: false),
+            const SectionTitle('حساب من', 'اطلاعات و همراهان شما'),
+            ProfileHeader(
+                name: '${data['name'] ?? tr('حساب من')}',
+                subtitle:
+                    '${data['mobile'] ?? ''} · ${data['member_no'] ?? ''}'),
             Card(
                 child: ListTile(
                     leading: const Icon(Icons.language),

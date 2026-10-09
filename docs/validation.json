@@ -1,13 +1,13 @@
 {
   "shared_source": {
     "repository": "hpeikanian/bonyeapp",
-    "commit": "f37a4528c37d245900f388019cab90632697f28f",
-    "lib_sha256": "8c12fda0105101fd43c62bd120d75f0e1938bc2670a838a39196eebed76a2ba8"
+    "commit": "bf71697f751a2c04e34f1d75f087b958ad2d75b0",
+    "lib_sha256": "deb629186bf748742bd1cc5d64061e4425a52007cfa77d3210dab06cfd50ad57"
   },
-  "app_version": "0.2.3+6",
+  "app_version": "0.3.0+7",
   "passed": {
     "flutter_analyze": true,
-    "shared_flutter_tests": 24,
+    "shared_flutter_tests": 26,
     "browser_cache_tests": 1,
     "web_release_build": true,
     "android_debug_arm64_build": true,
@@ -22,7 +22,7 @@
     "web_quantity_request_mocked": true,
     "php_lint": true,
     "php_localized_render_cases": 6,
-    "ftps_deployment_tests": 3,
+    "ftps_deployment_tests": 4,
     "signing_restore_and_invalid_secret_refusal": true,
     "verified_apk_manifest_generation": true,
     "no_updater_or_apk_in_shell_cache": true,
@@ -39,9 +39,9 @@
     "physical_Android_update_installation"
   ],
   "artifact": {
-    "file": "downloads/bonye-webapp-v0.2.3.zip",
-    "bytes": 10044870,
-    "sha256": "f5794a215f823a06e59ef0bb87fc231ce79bebd20ef639060f33cf85da580eb3",
+    "file": "downloads/bonye-webapp-v0.3.0.zip",
+    "bytes": 12299986,
+    "sha256": "b1af2008287031d0e96bbd97683b34b64eb95982dc8eda51d4f47126e5e7b3e0",
     "base_path": "/app/"
   },
   "notes": [

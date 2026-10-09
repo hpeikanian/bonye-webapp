@@ -149,11 +149,13 @@ void main() {
     expect(find.text('Hello مریم'), findsOneWidget);
     expect(find.text('Home'), findsOneWidget);
     await capture(tester, 'home-en');
-    await tester.tap(find.text('Club'));
+    await tester.tap(find.descendant(
+        of: find.byType(NavigationBar), matching: find.text('Club')));
     await tester.pumpAndSettle();
     expect(find.text('Your points'), findsOneWidget);
     await capture(tester, 'club-en');
-    await tester.tap(find.text('My pets'));
+    await tester.tap(find.descendant(
+        of: find.byType(NavigationBar), matching: find.text('My pets')));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Add pet'));
     await tester.pumpAndSettle();

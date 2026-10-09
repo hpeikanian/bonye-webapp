@@ -1,4 +1,5 @@
 import '../core/language.dart';
+import '../core/design.dart';
 import 'package:flutter/material.dart';
 import '../core/api.dart';
 import '../core/widgets.dart';
@@ -12,10 +13,8 @@ class PetsPage extends StatelessWidget {
         load: () => api.request('GET', '/pets?limit=100'),
         builder: (data, reload) => PageBody(
           children: [
-            const BrandFeature(
-                title: 'پت‌های من',
-                subtitle: 'هر پت، پرونده و برنامه غذایی خودش را دارد.',
-                icon: Icons.pets_outlined),
+            const SectionTitle(
+                'پت‌های من', 'هر پت، پرونده و برنامه غذایی خودش را دارد.'),
             FilledButton.icon(
               onPressed: () async {
                 await Navigator.of(context).push(
@@ -32,11 +31,9 @@ class PetsPage extends StatelessWidget {
                   (pet) => Card(
                     child: ListTile(
                       contentPadding: const EdgeInsets.all(16),
-                      leading: CircleAvatar(
-                          radius: 26,
-                          backgroundColor: const Color(0xFFDCE4D8),
-                          child: Text(pet['species'] == 'cat' ? '🐱' : '🐶',
-                              style: const TextStyle(fontSize: 26))),
+                      leading: SoftIcon(Icons.pets_outlined,
+                          size: 64,
+                          color: pet['species'] == 'cat' ? peach : sage),
                       title: AppText('${pet['name']}', translate: false),
                       subtitle: AppText(
                         '${pet['species'] == 'cat' ? 'گربه' : 'سگ'} · ${pet['weight_kg'] ?? '—'} کیلوگرم',
@@ -337,31 +334,40 @@ class PetPage extends StatelessWidget {
         appBar: AppBar(title: AppText('${pet['name']}', translate: false)),
         body: PageBody(
           children: [
+            ProfileHeader(
+                name: '${pet['name'] ?? ''}',
+                subtitle:
+                    '${pet['breed'] ?? tr(pet['species'] == 'cat' ? 'گربه' : 'سگ')}',
+                icon: Icons.pets_outlined),
             InfoCard(
               'وزن فعلی',
               '${pet['weight_kg'] ?? '—'} کیلوگرم',
               Icons.monitor_weight_outlined,
             ),
-            FilledButton(
-              onPressed: () => push(context, FeedingPage(api: api, pet: pet)),
-              child: const AppText('پیشنهاد غذا و برنامه مصرف'),
-            ),
-            OutlinedButton(
-              onPressed: () => push(context, PetForm(api: api, pet: pet)),
-              child: const AppText('ویرایش مشخصات'),
-            ),
-            OutlinedButton(
-              onPressed: () => push(context, WeightForm(api: api, pet: pet)),
-              child: const AppText('ثبت وزن جدید'),
-            ),
-            ListTile(
-              title: const AppText('سابقه وزن'),
-              trailing: const ForwardChevron(),
-              onTap: () => push(
-                context,
-                RecordsPage(api, '/pets/${pet['id']}/weights', 'سابقه وزن'),
-              ),
-            ),
+            QuickActions(children: [
+              QuickAction(
+                  title: 'پیشنهاد غذا و برنامه مصرف',
+                  icon: Icons.restaurant_outlined,
+                  onTap: () => push(context, FeedingPage(api: api, pet: pet))),
+              QuickAction(
+                  title: 'ویرایش مشخصات',
+                  icon: Icons.edit_outlined,
+                  color: peach,
+                  onTap: () => push(context, PetForm(api: api, pet: pet))),
+              QuickAction(
+                  title: 'ثبت وزن جدید',
+                  icon: Icons.monitor_weight_outlined,
+                  color: sky,
+                  onTap: () => push(context, WeightForm(api: api, pet: pet))),
+              QuickAction(
+                  title: 'سابقه وزن',
+                  icon: Icons.insights_outlined,
+                  color: rose,
+                  onTap: () => push(
+                      context,
+                      RecordsPage(
+                          api, '/pets/${pet['id']}/weights', 'سابقه وزن'))),
+            ]),
             ListTile(
               title: const AppText('برنامه‌های غذایی قبلی'),
               trailing: const ForwardChevron(),

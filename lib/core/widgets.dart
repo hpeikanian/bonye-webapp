@@ -12,7 +12,18 @@ String plainText(Object? value) => (value ?? '')
     .replaceAll('&amp;', '&')
     .replaceAll('&nbsp;', ' ')
     .replaceAll('&#8217;', '’');
-String money(Object? amount) => '${amount ?? '0'} ریال';
+String money(Object? amount) {
+  final raw = '${amount ?? '0'}';
+  if (!RegExp(r'^-?\d+(\.\d+)?$').hasMatch(raw)) return '$raw ریال';
+  final parts = raw.split('.');
+  final integer = parts.first.replaceAllMapped(
+      RegExp(r'(\d)(?=(\d{3})+(?!\d))'), (match) => '${match[1]},');
+  final fraction =
+      parts.length > 1 ? parts[1].replaceFirst(RegExp(r'0+$'), '') : '';
+  final formatted = fraction.isEmpty ? integer : '$integer.$fraction';
+  return '$formatted ریال';
+}
+
 Future<void> externalLink(String url) async {
   final uri = Uri.tryParse(url);
   if (uri == null || uri.scheme != 'https' || uri.host.isEmpty) {
