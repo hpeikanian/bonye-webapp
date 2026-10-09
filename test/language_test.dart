@@ -87,6 +87,12 @@ void main() {
     await tester.pumpAndSettle();
     expect(Directionality.of(tester.element(find.byType(TextField).first)),
         TextDirection.rtl);
+    expect(
+        Theme.of(tester.element(find.byType(TextField).first))
+            .textTheme
+            .bodyMedium
+            ?.fontFamily,
+        'IranianSans');
     await capture(tester, 'login-fa');
     await tester.tap(find.byType(LanguagePicker));
     await tester.pumpAndSettle();
@@ -96,6 +102,12 @@ void main() {
         TextDirection.ltr);
     expect(find.text('Mobile number'), findsOneWidget);
     expect(find.text('Welcome back'), findsOneWidget);
+    expect(
+        Theme.of(tester.element(find.byType(TextField).first))
+            .textTheme
+            .bodyMedium
+            ?.fontFamily,
+        'NotoSansArabic');
     await capture(tester, 'login-en');
     await tester.ensureVisible(find.text('Join'));
     await tester.tap(find.text('Join'));

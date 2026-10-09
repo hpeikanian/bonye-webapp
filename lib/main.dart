@@ -81,9 +81,14 @@ class _BonyeAppState extends State<BonyeApp> {
             localizationsDelegates: GlobalMaterialLocalizations.delegates,
             theme: ThemeData(
               useMaterial3: true,
-              fontFamily: 'NotoSansArabic',
-              primaryTextTheme: const TextTheme(
-                  labelLarge: TextStyle(fontFamily: 'NotoSansArabic')),
+              fontFamily:
+                  appLanguage.english ? 'NotoSansArabic' : 'IranianSans',
+              fontFamilyFallback: const ['NotoSansArabic'],
+              primaryTextTheme: TextTheme(
+                  labelLarge: TextStyle(
+                      fontFamily: appLanguage.english
+                          ? 'NotoSansArabic'
+                          : 'IranianSans')),
               colorScheme: ColorScheme.fromSeed(
                       seedColor: brand, brightness: Brightness.light)
                   .copyWith(
@@ -128,8 +133,10 @@ class _BonyeAppState extends State<BonyeApp> {
                       minimumSize: const Size(48, 54),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18)),
-                      textStyle: const TextStyle(
-                          fontFamily: 'NotoSansArabic',
+                      textStyle: TextStyle(
+                          fontFamily: appLanguage.english
+                              ? 'NotoSansArabic'
+                              : 'IranianSans',
                           fontSize: 15,
                           fontWeight: FontWeight.w600))),
               outlinedButtonTheme: OutlinedButtonThemeData(
