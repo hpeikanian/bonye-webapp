@@ -52,6 +52,7 @@ with sync_playwright() as p:
  assert any(name.startswith('bonye.shell.') for name in caches_before)
  cache_urls=page.evaluate('''async () => {const urls=[];for(const name of await caches.keys()){if(name.startsWith('bonye.shell.')){for(const req of await (await caches.open(name)).keys())urls.push(req.url)}}return urls}''')
  assert not any('/api/v1/' in url for url in cache_urls)
+ assert not any('android-update.json' in url or '/downloads/' in url for url in cache_urls)
  # Explicitly allow worker activation and precaching to settle.
  page.wait_for_timeout(2000)
  offline[0]=True

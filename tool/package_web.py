@@ -11,7 +11,9 @@ archive = root / f'downloads/bonye-webapp-v{version}.zip'
 archive.parent.mkdir(exist_ok=True)
 with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED, compresslevel=9) as z:
     for path in sorted(output.rglob('*')):
-        if not path.is_file() or path.name.endswith(('.symbols', '.map')):
+        if (not path.is_file() or path.name.endswith(('.symbols', '.map'))
+                or path.name == 'android-update.json'
+                or 'downloads' in path.relative_to(output).parts):
             continue
         info = zipfile.ZipInfo(str(path.relative_to(output)),
                                (2026, 10, 8, 0, 0, 0))

@@ -1,5 +1,18 @@
 // UI copy only. API values and server content are never translated on the wire.
 const englishCopy = <String, String>{
+  'نسخه جدید اپ آماده است.': 'A new app version is available.',
+  'به‌روزرسانی': 'Update',
+  'بعداً': 'Later',
+  'به‌روزرسانی اپ': 'App updates',
+  'نسخه نصب‌شده': 'Installed version',
+  'نسخه جدید': 'New version',
+  'بررسی نسخه ممکن نشد؛ دوباره تلاش کنید.':
+      'Could not check for updates. Try again.',
+  'فایل آپدیت در مرورگر دانلود می‌شود. پس از دانلود، فایل را باز و نصب را تأیید کنید. حذف اپ لازم نیست.':
+      'The update downloads in your browser. Open the downloaded file and confirm installation. You do not need to uninstall the app.',
+  'دریافت آپدیت': 'Download update',
+  'اپ شما به‌روز است.': 'Your app is up to date.',
+  'بررسی نسخه جدید': 'Check for updates',
   "تعداد بسته": "Quantity (packs)",
   "کاهش تعداد": "Decrease quantity",
   "افزایش تعداد": "Increase quantity",

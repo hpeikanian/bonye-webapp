@@ -1,13 +1,13 @@
 {
   "shared_source": {
     "repository": "hpeikanian/bonyeapp",
-    "commit": "9f3dd71c1809a5de7533d3caf12f4d57dd2e8f1c",
-    "lib_sha256": "4c611b3485e7ef90b0d632ca1be266eebec34ef797718b08de29b7093f7e05ca"
+    "commit": "f37a4528c37d245900f388019cab90632697f28f",
+    "lib_sha256": "8c12fda0105101fd43c62bd120d75f0e1938bc2670a838a39196eebed76a2ba8"
   },
-  "app_version": "0.2.2+5",
+  "app_version": "0.2.3+6",
   "passed": {
     "flutter_analyze": true,
-    "shared_flutter_tests": 20,
+    "shared_flutter_tests": 24,
     "browser_cache_tests": 1,
     "web_release_build": true,
     "android_debug_arm64_build": true,
@@ -21,7 +21,12 @@
     "zip_public_file_permissions_0644": true,
     "web_quantity_request_mocked": true,
     "php_lint": true,
-    "php_localized_render_cases": 6
+    "php_localized_render_cases": 6,
+    "ftps_deployment_tests": 3,
+    "signing_restore_and_invalid_secret_refusal": true,
+    "verified_apk_manifest_generation": true,
+    "no_updater_or_apk_in_shell_cache": true,
+    "workflow_yaml_parsed": true
   },
   "unrun": [
     "production_host_deployment",
@@ -29,18 +34,22 @@
     "live_account_authentication",
     "live_checkout_payment",
     "GitHub_Actions_execution",
-    "WordPress_live_checkout_language_plugin"
+    "WordPress_live_checkout_language_plugin",
+    "production_FTPS_connection",
+    "physical_Android_update_installation"
   ],
   "artifact": {
-    "file": "downloads/bonye-webapp-v0.2.2.zip",
-    "bytes": 10044122,
-    "sha256": "060dd2c0a6da2f6c194b6ca61192f7bc5880c23793d1e0b0ccea4c421356bc1f",
+    "file": "downloads/bonye-webapp-v0.2.3.zip",
+    "bytes": 10044870,
+    "sha256": "f5794a215f823a06e59ef0bb87fc231ce79bebd20ef639060f33cf85da580eb3",
     "base_path": "/app/"
   },
   "notes": [
     "Browser functional checks use mocked API responses and fictional customer data.",
-    "Paired workflows generate build artifacts; automated hosting deployment is not configured.",
     "Cross-repository Actions checkout needs read access to private repositories.",
-    "Web audio downloads use browser Cache Storage with a 64 MiB cap; browser eviction and iOS background restrictions apply."
+    "Web audio downloads use browser Cache Storage with a 64 MiB cap; browser eviction and iOS background restrictions apply.",
+    "Paired FTPS publication and Android update checks implemented; production GitHub secrets/variables still required.",
+    "Publication keeps the existing development signing identity; a store release key migration remains separate.",
+    "Each FTP file is promoted by rename; deployment is not an atomic folder transaction."
   ]
 }

@@ -1,4 +1,5 @@
 import '../core/language.dart';
+import '../core/app_updates.dart';
 import 'package:flutter/material.dart';
 import '../core/api.dart';
 import '../core/widgets.dart';
@@ -18,6 +19,13 @@ class AccountPage extends StatelessWidget {
                     leading: const Icon(Icons.language),
                     title: const AppText('زبان اپ'),
                     trailing: const LanguagePicker())),
+            if (AppUpdates.supported)
+              ListTile(
+                  leading: const Icon(Icons.system_update),
+                  title: const AppText('به‌روزرسانی اپ'),
+                  trailing: const ForwardChevron(),
+                  onTap: () => push(
+                      context, UpdatePage(updates: UpdateScope.of(context)))),
             RecordCard(data),
             OutlinedButton(
                 onPressed: () async {

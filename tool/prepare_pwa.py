@@ -7,7 +7,8 @@ root = Path(__file__).resolve().parents[1]
 output = root / 'build/web'
 (output / 'source-revision.json').write_bytes((root / 'source-revision.json').read_bytes())
 files = sorted(p for p in output.rglob('*') if p.is_file()
-               and p.name not in ['sw.js', 'flutter_service_worker.js']
+               and p.name not in ['sw.js', 'flutter_service_worker.js', 'android-update.json']
+               and 'downloads' not in p.relative_to(output).parts
                and not p.name.startswith('.')
                and not p.name.endswith(('.map', '.symbols')))
 digest = hashlib.sha256()
@@ -57,6 +58,7 @@ self.addEventListener('fetch', event => {
 (output / '.htaccess').write_text('''Options -Indexes
 <IfModule mod_mime.c>
   AddType application/wasm .wasm
+  AddType application/vnd.android.package-archive .apk
   AddType application/manifest+json .webmanifest
 </IfModule>
 <IfModule mod_headers.c>

@@ -7,3 +7,6 @@ build/
 test/*_browser.dart
 __pycache__/
 *.pyc
+
+*.keystore
+*.jks

@@ -1,4 +1,5 @@
 import 'core/language.dart';
+import 'core/app_updates.dart';
 import 'core/brand.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
@@ -71,6 +72,8 @@ class _BonyeAppState extends State<BonyeApp> {
           controller: appLanguage,
           child: MaterialApp(
             navigatorKey: navigator,
+            builder: (context, child) =>
+                UpdateHost(navigator: navigator, child: child!),
             title: 'bonYe!',
             debugShowCheckedModeBanner: false,
             locale: appLanguage.locale,
