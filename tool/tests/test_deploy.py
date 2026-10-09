@@ -1,6 +1,9 @@
 import importlib.util
 from pathlib import Path
 import tempfile
+import ftplib
+import socket
+import ssl
 import unittest
 
 spec = importlib.util.spec_from_file_location('deploy', Path(__file__).parents[1] / 'deploy_ftps.py')
@@ -18,6 +21,18 @@ class FakeFTP:
     def rename(self, source, target): self.events.append(('rename', target))
 
 class DeploymentTests(unittest.TestCase):
+    def test_diagnostics_never_echo_server_messages_or_credentials(self):
+        for error, expected in [
+            (ftplib.error_perm('530 private-user private-password'), 'FTP_RESPONSE_530'),
+            (ftplib.error_perm('550 private-user private-password'), 'FTP_RESPONSE_550'),
+            (socket.gaierror('private-user private-password'), 'DNS_LOOKUP_FAILED'),
+            (ConnectionRefusedError('private-password'), 'CONNECTION_REFUSED'),
+            (ssl.SSLError('private-password'), 'TLS_NEGOTIATION_FAILED'),
+        ]:
+            message = deploy.failure_message(error, 'login')
+            self.assertIn(expected, message)
+            self.assertNotIn('private-user', message)
+            self.assertNotIn('private-password', message)
     def fixture(self, root):
         for name in ['assets/logo.png', 'downloads/bonYe-v0.2.3-6.apk',
                      'index.html', 'flutter_bootstrap.js', 'main.dart.js', 'sw.js',

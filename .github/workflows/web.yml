@@ -34,6 +34,15 @@ jobs:
         env:
           EVENT: ${{ github.event_name }}
         run: python3 webapp/tool/publication_needed.py shared-source
+      - name: Check FTPS connection before builds
+        if: steps.change.outputs.needed == 'true' && vars.BONYE_DEPLOY_ENABLED == 'true'
+        env:
+          BONYE_FTP_HOST: ${{ secrets.BONYE_FTP_HOST }}
+          BONYE_FTP_USER: ${{ secrets.BONYE_FTP_USER }}
+          BONYE_FTP_PASSWORD: ${{ secrets.BONYE_FTP_PASSWORD }}
+          BONYE_FTP_PORT: ${{ vars.BONYE_FTP_PORT || '21' }}
+          BONYE_FTP_APP_ONLY: ${{ vars.BONYE_FTP_APP_ONLY }}
+        run: python3 webapp/tool/deploy_ftps.py --check-connection
       - uses: actions/setup-java@v4
         if: steps.change.outputs.needed == 'true'
         with:
